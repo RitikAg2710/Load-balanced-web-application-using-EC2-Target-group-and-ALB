@@ -1,14 +1,23 @@
-# Load-balanced-web-application-using-EC2-Target-group-and-ALB
+🔧 STEP 1: Create 2 EC2 Servers (Chhoti Machines)
+AWS Console pe jao → Search: EC2
 
-🔧 STEP-BY-STEP SETUP
-Step 1: Launch 2 EC2 Instances
-Do this 2 baar:
+Click Launch Instance
+
+Instance Name: Server 1
 
 AMI: Amazon Linux 2
 
-Type: t2.micro (Free tier)
+Instance type: t2.micro (Free tier)
 
-User Data:
+Key Pair: Choose existing or create new
+
+Network settings:
+
+Create new Security Group
+
+Allow port 22 (SSH) and port 80 (HTTP)
+
+Scroll to Advanced → User Data → Paste this:
 
 bash
 Copy
@@ -16,71 +25,91 @@ Edit
 #!/bin/bash
 sudo yum update -y
 sudo yum install -y httpd
-echo "<h1>Server 1</h1>" > /var/www/html/index.html
+echo "<h1>This is Server 1</h1>" > /var/www/html/index.html
 sudo systemctl start httpd
 sudo systemctl enable httpd
-For 2nd EC2, just replace Server 1 → Server 2
+Launch
 
-Security Group: Allow port 80 (HTTP) inbound
+Repeat same for Server 2, just change this line:
 
-Launch in same VPC (but preferably different AZs)
+bash
+Copy
+Edit
+echo "<h1>This is Server 2</h1>" > /var/www/html/index.html
+🟢 Dono servers ka status running hona chahiye
+🧪 Browser mein daalke test karo:
+http://<EC2-IP> → dikhega Server 1 ya Server 2
 
-Step 2: Create a Target Group
-Go to: EC2 Dashboard → Target Groups → Create
+🎯 STEP 2: Create Target Group (Group of Servers)
+AWS Console → EC2 → Target Groups
 
-Name: my-target-group
+Click Create Target Group
+
+Settings:
 
 Target type: Instances
+
+Name: ritik-target-group
 
 Protocol: HTTP
 
 Port: 80
 
-VPC: Same as EC2s
+VPC: Same as EC2 VPC
 
-Health Check:
-
-Path: /
+Health check:
 
 Protocol: HTTP
 
-Click Next
+Path: /
 
-Register Targets: Select both EC2s → Add to registered
+Next → Register Targets:
 
-Create
+Select Server 1 and Server 2
 
-Step 3: Create Application Load Balancer
-Go to: EC2 Dashboard → Load Balancers → Create
+Click Include as pending
 
-Type: Application Load Balancer
+Click Create Target Group
 
-Name: my-alb
+🎉 Done → Tumhara “server group” ready ho gaya
+
+🎯 STEP 3: Create Load Balancer (ALB)
+EC2 → Load Balancers → Create Load Balancer
+
+Select Application Load Balancer
+
+Settings:
+
+Name: ritik-alb
 
 Scheme: Internet-facing
 
-IP type: IPv4
+IP: IPv4
 
-Listeners: HTTP (Port 80)
+Select at least 2 public subnets from different AZs
 
-Availability Zones: Select at least 2 AZs and subnets
+Security Group:
 
-Step 4: Configure Security Group for ALB
-Create new SG → Allow port 80 (HTTP) from 0.0.0.0/0
+Create new SG: Allow port 80 (HTTP)
 
-Step 5: Configure Listener and Routing
-Listener: HTTP:80
+Listener:
 
-Default action: Forward to your target group my-target-group
+Listener HTTP:80 → Forward to → Select your ritik-target-group
 
-Step 6: Review and Create
-Click Create Load Balancer
+Review & Create
 
-Wait for it to become Active
+⏳ Wait for ALB to become Active
 
-Step 7: Test the Load Balancer
-Go to Load Balancers → my-alb → Description
+🧪 STEP 4: Test Your Load Balancer
+Go to Load Balancers → ritik-alb → Description tab
 
-Copy DNS name (e.g., my-alb-123456.ap-south-1.elb.amazonaws.com)
+Copy the DNS name
+Example: ritik-alb-123456.ap-south-1.elb.amazonaws.com
 
-Paste in browser multiple times → You’ll see Server 1, Server 2 alternately (round robin)
+Paste in browser
+
+👀 Output:
+
+Refresh again and again → kabhi This is Server 1, kabhi This is Server 2
+
+🎉 Congrats bhai! Tu Load Balancer practical kar gaya!
