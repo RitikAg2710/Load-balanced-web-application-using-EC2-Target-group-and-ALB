@@ -5,14 +5,7 @@ Click Launch Instance
 
 Create 2 Instances --> Http port enabled 
 
-Paste Data 
 
-#!/bin/bash
-sudo yum update -y
-sudo yum install -y httpd
-echo "<h1>This is Server 1</h1>" > /var/www/html/index.html
-sudo systemctl start httpd
-sudo systemctl enable httpd
 
 
 SAME AS FOR EC2 INSTANCE TOO 
@@ -48,7 +41,7 @@ Click Include as pending
 
 Click Create Target Group
 
-🎉 Done → Tumhara “server group” ready ho gaya
+🎉 Done 
 
 🎯 STEP 3: Create Load Balancer (ALB)
 EC2 → Load Balancers → Create Load Balancer
@@ -89,4 +82,4 @@ Paste in browser
 
 Refresh again and again → kabhi This is Server 1, kabhi This is Server 2
 
-🎉 Congrats bhai! Tu Load Balancer practical kar gaya!
+🎉 Congrats
