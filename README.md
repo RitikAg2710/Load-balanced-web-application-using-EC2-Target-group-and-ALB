@@ -1,44 +1,21 @@
-🔧 STEP 1: Create 2 EC2 Servers (Chhoti Machines)
+🔧 STEP 1: Create 2 EC2 Servers
 AWS Console pe jao → Search: EC2
 
 Click Launch Instance
 
-Instance Name: Server 1
+Create 2 Instances --> Http port enabled 
 
-AMI: Amazon Linux 2
+Paste Data 
 
-Instance type: t2.micro (Free tier)
-
-Key Pair: Choose existing or create new
-
-Network settings:
-
-Create new Security Group
-
-Allow port 22 (SSH) and port 80 (HTTP)
-
-Scroll to Advanced → User Data → Paste this:
-
-bash
-Copy
-Edit
 #!/bin/bash
 sudo yum update -y
 sudo yum install -y httpd
 echo "<h1>This is Server 1</h1>" > /var/www/html/index.html
 sudo systemctl start httpd
 sudo systemctl enable httpd
-Launch
 
-Repeat same for Server 2, just change this line:
 
-bash
-Copy
-Edit
-echo "<h1>This is Server 2</h1>" > /var/www/html/index.html
-🟢 Dono servers ka status running hona chahiye
-🧪 Browser mein daalke test karo:
-http://<EC2-IP> → dikhega Server 1 ya Server 2
+SAME AS FOR EC2 INSTANCE TOO 
 
 🎯 STEP 2: Create Target Group (Group of Servers)
 AWS Console → EC2 → Target Groups
